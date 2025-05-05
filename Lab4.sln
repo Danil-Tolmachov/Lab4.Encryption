@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab4.Encryption", "Lab4\Lab4.Encryption.csproj", "{4AFA54D5-9F4E-4671-9637-1E63999C9C63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab4.Encryption", "Lab4\Lab4.Encryption.csproj", "{4AFA54D5-9F4E-4671-9637-1E63999C9C63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{813B98AE-BC2A-4309-84BA-D10AABCD7F09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{813B98AE-BC2A-4309-84BA-D10AABCD7F09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab4.App", "Lab4.MainForm\Lab4.App.csproj", "{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4AFA54D5-9F4E-4671-9637-1E63999C9C63} = {4AFA54D5-9F4E-4671-9637-1E63999C9C63}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,10 @@ Global
 		{813B98AE-BC2A-4309-84BA-D10AABCD7F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{813B98AE-BC2A-4309-84BA-D10AABCD7F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{813B98AE-BC2A-4309-84BA-D10AABCD7F09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
