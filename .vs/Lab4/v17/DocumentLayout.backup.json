@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}|Lab4.MainForm\\Lab4.App.csproj|solutionrelative:lab4.mainform\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}|Lab4.MainForm\\Lab4.App.csproj|c:\\users\\raikoben\\source\\repos\\lab4.encryption\\lab4.mainform\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}|Lab4.MainForm\\Lab4.App.csproj|solutionrelative:lab4.mainform\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4AFA54D5-9F4E-4671-9637-1E63999C9C63}|Lab4\\Lab4.Encryption.csproj|c:\\users\\raikoben\\source\\repos\\lab4.encryption\\lab4\\fileencryptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4AFA54D5-9F4E-4671-9637-1E63999C9C63}|Lab4\\Lab4.Encryption.csproj|solutionrelative:lab4\\fileencryptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}|Lab4.MainForm\\Lab4.App.csproj|c:\\users\\raikoben\\source\\repos\\lab4.encryption\\lab4.mainform\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0265A0DD-5235-4CC5-9D2F-0906CEE798E8}|Lab4.MainForm\\Lab4.App.csproj|solutionrelative:lab4.mainform\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,7 +50,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MainForm.cs",
               "DocumentMoniker": "C:\\Users\\raikoben\\source\\repos\\Lab4.Encryption\\Lab4.MainForm\\MainForm.cs",
               "RelativeDocumentMoniker": "Lab4.MainForm\\MainForm.cs",
@@ -63,7 +63,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "FileEncryptor.cs",
               "DocumentMoniker": "C:\\Users\\raikoben\\source\\repos\\Lab4.Encryption\\Lab4\\FileEncryptor.cs",
               "RelativeDocumentMoniker": "Lab4\\FileEncryptor.cs",
