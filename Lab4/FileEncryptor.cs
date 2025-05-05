@@ -57,29 +57,46 @@ public class FileEncryptor : IFileEncryptor
 
         byte[] buffer = new byte[4096];
         long totalBytes = inputStream.Length;
-        long totalRead = 0;
+        long totalProcessed = 0;
         int lastReportedProgress = -1;
 
         int bytesRead;
-        while ((bytesRead = await inputStream.ReadAsync(buffer, cancellationToken)) > 0)
+        while ((bytesRead = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
         {
             if (_isCancelled)
-                throw new OperationCanceledException("Encryption was canceled.");
+                throw new OperationCanceledException("Operation was canceled by the user.");
 
-            _pauseEvent.Wait();
+            _pauseEvent.Wait(cancellationToken); 
 
-            await cs.WriteAsync(buffer, cancellationToken);
-            totalRead += bytesRead;
+            if (_isCancelled)
+                throw new OperationCanceledException("Operation was canceled by the user.");
 
-            int progress = (int)(100.0 * totalRead / totalBytes);
-            if (progress != lastReportedProgress)
+            await cs.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+
+            totalProcessed += bytesRead;
+
+            if (totalBytes > 0) 
             {
-                updateProgressAction(progress);
-                lastReportedProgress = progress;
+                int progress = (int)(100.0 * totalProcessed / totalBytes);
+                if (progress != lastReportedProgress)
+                {
+                    updateProgressAction(progress);
+                    lastReportedProgress = progress;
+                }
+            }
+            else
+            {
+                updateProgressAction(100);
+                lastReportedProgress = 100;
             }
         }
-    }
 
+        if (lastReportedProgress != 100 && totalBytes > 0)
+        {
+            updateProgressAction(100);
+        }
+    }
+  
     private static Rfc2898DeriveBytes GetKey(string password)
     {
         var encodedPassword = Encoding.UTF8.GetBytes(password);

@@ -1,9 +1,11 @@
 ﻿using Lab4;
 using System.Diagnostics;
 
-string input = @"C:\Users\pacma\OneDrive\Рабочий стол\lab4\secret.txt";
-string output = @"C:\Users\pacma\OneDrive\Рабочий стол\lab4\secret_out.txt";
+string input = @"C:\Users\raikoben\Desktop\Plan.txt";
+string output = @"C:\Users\raikoben\Desktop\1.txt";
 
+//string input = @"C:\Users\raikoben\Desktop\1.txt";
+//string output = @"C:\Users\raikoben\Desktop\zxc.txt";
 
 var encryptor = new FileEncryptor();
 
@@ -25,6 +27,7 @@ var thread = new Thread(async () =>
     try
     {
         await encryptor.Encrypt(password, inputFile, outputFile, p => Console.WriteLine($"Progress: {p}%"));
+        //await encryptor.Decrypt(password, inputFile, outputFile, p => Console.WriteLine($"Progress: {p}%"));
     }
     catch (OperationCanceledException)
     {
