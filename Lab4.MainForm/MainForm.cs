@@ -2,9 +2,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks; // Needed if using async calls within BackgroundWorker more directly
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Lab4; // Assuming FileEncryptor is in this namespace
+using Lab4;
 
 namespace Lab4.MainForm
 {
@@ -12,11 +12,10 @@ namespace Lab4.MainForm
     {
         private FileEncryptor _encryptor;
         private Stopwatch _stopwatch;
-        private OperationType _currentOperation; // To know if encrypting or decrypting
+        private OperationType _currentOperation; 
 
         private enum OperationType { Encrypt, Decrypt }
 
-        // Structure to pass arguments to BackgroundWorker
         private class WorkerArguments
         {
             public string InputPath { get; set; }
@@ -29,15 +28,13 @@ namespace Lab4.MainForm
         {
             InitializeComponent();
             _stopwatch = new Stopwatch();
-            _encryptor = new FileEncryptor(); // Create instance here
+            _encryptor = new FileEncryptor(); 
 
-            // Configure BackgroundWorker event handlers
             backgroundWorker.DoWork += BackgroundWorker_DoWork;
             backgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
             backgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
         }
 
-        // --- UI Event Handlers ---
 
         private void btnBrowseInput_Click(object sender, EventArgs e)
         {
@@ -79,7 +76,7 @@ namespace Lab4.MainForm
                 lblStatus.Text = "Status: Paused";
                 btnPause.Enabled = false;
                 btnResume.Enabled = true;
-                btnCancel.Enabled = true; // Can still cancel while paused
+                btnCancel.Enabled = true; 
             }
         }
 
@@ -102,8 +99,8 @@ namespace Lab4.MainForm
             if (backgroundWorker.IsBusy)
             {
                 lblStatus.Text = "Status: Cancelling...";
-                _encryptor?.Cancel(); // Signal the encryptor's internal cancellation
-                backgroundWorker.CancelAsync(); // Signal the BackgroundWorker
+                _encryptor?.Cancel(); 
+                backgroundWorker.CancelAsync(); 
                 btnPause.Enabled = false;
                 btnResume.Enabled = false;
                 btnCancel.Enabled = false;
@@ -112,12 +109,9 @@ namespace Lab4.MainForm
 
         private void uiTimer_Tick(object sender, EventArgs e)
         {
-            // Update elapsed time display
             lblTimer.Text = $"Elapsed: {_stopwatch.Elapsed:hh\\:mm\\:ss}";
         }
 
-
-        // --- Helper Methods ---
 
         private void StartOperation(OperationType operation)
         {
@@ -153,7 +147,6 @@ namespace Lab4.MainForm
             string outputFile = txtOutputFile.Text;
             string password = txtPassword.Text;
 
-            // Reset state
             progressBar.Value = 0;
             lblProgress.Text = "Progress: 0%";
             lblTimer.Text = "Elapsed: 00:00:00";
@@ -161,7 +154,6 @@ namespace Lab4.MainForm
             _stopwatch.Reset();
 
 
-            // Prepare arguments for the worker
             var args = new WorkerArguments
             {
                 InputPath = inputFile,
@@ -170,11 +162,9 @@ namespace Lab4.MainForm
                 Operation = operation
             };
 
-            // Update UI state for running operation
             SetUIState(isRunning: true);
 
-            // Start the background worker
-            _encryptor = new FileEncryptor(); // Create a fresh encryptor for each run
+            _encryptor = new FileEncryptor(); 
             _stopwatch.Start();
             uiTimer.Start();
             backgroundWorker.RunWorkerAsync(args);
@@ -190,13 +180,11 @@ namespace Lab4.MainForm
             btnEncrypt.Enabled = !isRunning;
             btnDecrypt.Enabled = !isRunning;
 
-            // Control buttons are enabled only when running
             btnPause.Enabled = isRunning;
-            btnResume.Enabled = false; // Resume is only enabled after pausing
+            btnResume.Enabled = false; 
             btnCancel.Enabled = isRunning;
         }
 
-        // --- BackgroundWorker Event Handlers ---
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -207,11 +195,9 @@ namespace Lab4.MainForm
 
             try
             {
-                // Define progress action using the worker's ReportProgress
                 Action<int> progressCallback = p => worker.ReportProgress(p);
 
                 using var inputFile = new FileStream(args.InputPath, FileMode.Open, FileAccess.Read);
-                // Use FileMode.Create to overwrite or create the output file safely
                 using var outputFile = new FileStream(args.OutputPath, FileMode.Create, FileAccess.Write);
 
                 Task taskToRun;
@@ -220,57 +206,47 @@ namespace Lab4.MainForm
                 {
                     taskToRun = _encryptor.Encrypt(args.Password, inputFile, outputFile, progressCallback);
                 }
-                else // Decrypt
+                else 
                 {
                     taskToRun = _encryptor.Decrypt(args.Password, inputFile, outputFile, progressCallback);
                 }
 
-                // IMPORTANT: Await the task synchronously within DoWork.
-                // GetAwaiter().GetResult() is generally safe here as DoWork runs on a pool thread.
                 taskToRun.GetAwaiter().GetResult();
 
-                // Check for cancellation *after* the task might have completed or thrown
                 if (worker.CancellationPending)
                 {
                     e.Cancel = true;
                 }
                 else
                 {
-                    // Operation completed successfully
                     finalSize = new FileInfo(args.OutputPath).Length;
                     success = true;
                 }
             }
-            catch (OperationCanceledException) // Catch cancellation from within FileEncryptor
+            catch (OperationCanceledException) 
             {
-                e.Cancel = true; // Mark the BackgroundWorker event args as cancelled
+                e.Cancel = true; 
             }
             catch (System.Security.Cryptography.CryptographicException cryptEx)
             {
-                // Handle specific crypto errors, often padding errors during decrypt
                 e.Result = $"Crypto Error: {cryptEx.Message}. Possible wrong password or corrupted file.";
             }
             catch (Exception ex)
             {
-                // Catch general errors
-                e.Result = $"Error: {ex.Message}"; // Pass error message back to Completed handler
+                e.Result = $"Error: {ex.Message}"; 
             }
             finally
             {
-                // Clean up resources if needed, though 'using' statements handle streams
-                // If the operation was cancelled or failed, attempt to delete the potentially incomplete/corrupt output file
                 if (!success && !e.Cancel && File.Exists(args.OutputPath))
                 {
-                    try { File.Delete(args.OutputPath); } catch { /* Ignore delete errors */ }
+                    try { File.Delete(args.OutputPath); } catch { /*  */ }
                 }
-                // If cancelled, also clean up
                 if (e.Cancel && File.Exists(args.OutputPath))
                 {
-                    try { File.Delete(args.OutputPath); } catch { /* Ignore delete errors */ }
+                    try { File.Delete(args.OutputPath); } catch { /*  */ }
                 }
             }
 
-            // If successful, pass back results
             if (success && !e.Cancel)
             {
                 e.Result = finalSize;
@@ -280,7 +256,6 @@ namespace Lab4.MainForm
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            // Update progress bar and label (runs on UI thread)
             progressBar.Value = e.ProgressPercentage;
             lblProgress.Text = $"Progress: {e.ProgressPercentage}%";
         }
@@ -290,9 +265,8 @@ namespace Lab4.MainForm
             _stopwatch.Stop();
             uiTimer.Stop();
 
-            // Reset UI state
             SetUIState(isRunning: false);
-            progressBar.Value = 100; // Show 100% if not cancelled/errored
+            progressBar.Value = 100; 
             lblProgress.Text = "Progress: 100%";
 
 
@@ -303,21 +277,21 @@ namespace Lab4.MainForm
                 progressBar.Value = 0;
                 lblProgress.Text = "Progress: 0%";
             }
-            else if (e.Error != null) // BackgroundWorker catches unhandled exceptions from DoWork here
+            else if (e.Error != null)
             {
                 lblStatus.Text = "Status: Error";
                 MessageBox.Show($"An unexpected error occurred: {e.Error.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 progressBar.Value = 0;
                 lblProgress.Text = "Progress: 0%";
             }
-            else if (e.Result is string errorMessage) // Check if we passed an error string in e.Result from DoWork's catch blocks
+            else if (e.Result is string errorMessage) 
             {
                 lblStatus.Text = "Status: Error";
                 MessageBox.Show(errorMessage, "Operation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 progressBar.Value = 0;
                 lblProgress.Text = "Progress: 0%";
             }
-            else if (e.Result is long finalSize) // Success
+            else if (e.Result is long finalSize) 
             {
                 lblStatus.Text = "Status: Done";
                 string operationVerb = _currentOperation == OperationType.Encrypt ? "encrypted" : "decrypted";
@@ -327,14 +301,13 @@ namespace Lab4.MainForm
                                 $"Time Taken: {_stopwatch.Elapsed:hh\\:mm\\:ss}",
                                 "Operation Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else // Should not happen if logic is correct, but handle unknown state
+            else 
             {
                 lblStatus.Text = "Status: Unknown Completion State";
                 progressBar.Value = 0;
                 lblProgress.Text = "Progress: 0%";
             }
 
-            // Clean up reference
             _encryptor = null;
         }
     }
